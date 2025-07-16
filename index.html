@@ -2,198 +2,277 @@
 <html lang="gu">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <meta name="theme-color" content="#2e7d32" />
-  <link rel="manifest" href="manifest.json" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati&display=swap" rel="stylesheet" />
-  <title>દૈનિક વ્યવસાય રેકોર્ડ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>                                                                                                                                                                                                                                                                                                                                                                                                     
+  <meta name="theme-color" content="#2e7d32" />                                                                                                                                                                                                                                                                                                                                                                                                     
+  <link rel="manifest" href="manifest.json" />                                                                                                                                                                                                                                                                                                                                                                                                      
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati&display=swap" rel="stylesheet" />                                                                                                                                                                                                                                                                                                                                                                                                     
+  <title>દૈનિક વ્યવસાય રેકોર્ડ</title>                                                                                                                                                                                                                                                                                                                                                                                                     
   <style>
-    /* General body and font */
-body {
-  font-family: 'Noto Sans Gujarati', sans-serif;
-  margin: 1rem;
-  background: #f9f9f9;
-  color: #333;
-}
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Noto Sans Gujarati', 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+      border-radius: 12px;
+      background-color: #111;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+    h1 {
+      color: gold;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    form input, form button, select {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: none;
+      background: #222;
+      color: #fff;
+      box-sizing: border-box;
+    }
+    form button {
+      background: gold;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    form button:hover {
+      background: #ffd700;
+    }
+    table {
+      width: 100%;
+      margin-top: 2rem;
+      border-collapse: collapse;
+      color: #fff;
+      overflow-x: auto;
+    }
+    th, td {
+      padding: 0.7rem;
+      border: 1px solid #333;
+      text-align: center;
+    }
+    th {
+      background: #222;
+      color: gold;
+    }
+    tr {
+      background: #1a1a1a;
+    }
+    tfoot {
+      display: table-footer-group;
+    }
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      form input, form button {
+        font-size: 1rem;
+        padding: 0.5rem;
+      }
+      th, td {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 0.5rem;
+      }
+      #entriesContainer {
+        overflow-x: auto;
+      }
+      table {
+        min-width: 900px;
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+      }
+      thead, tfoot {
+        display: table-header-group;
+      }
+      tr, td, th {
+        white-space: nowrap;
+      }
+      td, th {
+        font-size: 0.85rem;
+        padding: 0.4rem;
+      }
+    }
+    @media (max-width: 400px) {
+      th, td {
+        font-size: 0.7rem;
+        padding: 0.2rem;
+      }
+    }
+  </style>                                                                                                                                                                                                                                                                                                                                                                                                      
 
-/* Form styling */
-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>                                                                                                                                                                                                                                                                                                                                                                                                     
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>                                                                                                                                                                                                                                                                                                                                                                                                     
+</head>                                                                                                                                                                                                                                                                                                                                                                                                     
 
-form input, form button {
-  padding: 0.6rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+<body>                                                                                                                                                                                                                                                                                                                                                                                                      
+  <div class="container">
+    <h1>દૈનિક વ્યવસાય રેકોર્ડ</h1>
+    <form id="entryForm">                                                                                                                                                                                                                                                                                                                                                                                                     
+      <input type="date" id="date" required />                                                                                                                                                                                                                                                                                                                                                                                                      
+      <input type="number" id="dailyCollection" placeholder="ડેલી" required />                                                                                                                                                                                                                                                                                                                                                                                                      
+      <input type="number" id="work" placeholder="કામ" required />                                                                                                                                                                                                                                                                                                                                                                                                     
+      <input type="number" id="google" placeholder="ગૂગલ" required />                                                                                                                                                                                                                                                                                                                                                                                                      
+      <input type="number" id="earned" placeholder="ઉપાડ" required />                                                                                                                                                                                                                                                                                                                                                                                                      
+      <input type="text" id="googleExpenseNote" placeholder="ગૂગલ ખર્ચ નૌંઘ" />                                                                                                                                                                                                                                                                                                                                                                                                     
+      <input type="number" id="googlePay" placeholder="ગૂગલ પે" />                                                                                                                                                                                                                                                                                                                                                                                                      
+      <input type="text" id="cashExpenseNote" placeholder="રોકડ ખર્ચ નૌંઘ" />                                                                                                                                                                                                                                                                                                                                                                                                     
+      <input type="number" id="totalExpense" placeholder="રોકડ ખર્ચ" />                                                                                                                                                                                                                                                                                                                                                                                                     
+      <button type="submit">Add Entry</button>                                                                                                                                                                                                                                                                                                                                                                                                      
+    </form>                                                                                                                                                                                                                                                                                                                                                                                                     
 
-form input[type="date"] {
-  max-width: 180px;
-}
+    <div style="margin-bottom:1rem;">
+      <select id="yearSelector" style="width:auto;display:inline-block;padding:0.5rem;border-radius:8px;background:#222;color:#fff;">
+        <!-- Years will be populated by JS -->
+      </select>
+      <select id="monthSelector" style="width:auto;display:inline-block;padding:0.5rem;border-radius:8px;background:#222;color:#fff;">
+        <!-- Months will be populated by JS -->
+      </select>
+      <button id="showMonthBtn" style="padding:0.5rem 1rem;background:gold;color:black;border:none;border-radius:8px;cursor:pointer;">Show Selected Month</button>
+    </div>
 
-form button {
-  background-color: #2e7d32;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+    <div id="entriesContainer">                                                                                                                                                                                                                                                                                                                                                                                                     
+      <table id="entriesTable">                                                                                                                                                                                                                                                                                                                                                                                                     
+        <thead>                                                                                                                                                                                                                                                                                                                                                                                                     
+          <tr>                                                                                                                                                                                                                                                                                                                                                                                                      
+            <th>ક્રમ સંખ્યા</th>                                                                                                                                                                                                                                                                                                                                                                                                      
+            <th>તારીખ</th>                                                                                                                                                                                                                                                                                                                                                                                                      
+            <th>ડેલી</th>                                                                                                                                                                                                                                                                                                                                                                                                     
+            <th>કામ</th>                                                                                                                                                                                                                                                                                                                                                                                                     
+            <th>ગૂગલ</th>                                                                                                                                                                                                                                                                                                                                                                                                      
+            <th>કુલ કામ</th>                                                                                                                                                                                                                                                                                                                                                                                                      
+            <th>ઉપાડ</th>                                                                                                                                                                                                                                                                                                                                                                                                      
+            <th>જમા</th>                                                                                                                                                                                                                                                                                                                                                                                                     
+            <th>ગૂગલ ખર્ચ નૌંઘ</th>                                                                                                                                                                                                                                                                                                                                                                                                     
+            <th>ગૂગલ પે</th>                                                                                                                                                                                                                                                                                                                                                                                                      
+            <th>રોકડ ખર્ચ નૌંઘ</th>                                                                                                                                                                                                                                                                                                                                                                                                     
+            <th>રોકડ ખર્ચ</th>                                                                                                                                                                                                                                                                                                                                                                                                      
+            <th>એકશન</th>                                                                                                                                                                                                                                                                                                                                                                                                     
+          </tr>                                                                                                                                                                                                                                                                                                                                                                                                     
+        </thead>                                                                                                                                                                                                                                                                                                                                                                                                      
+        <tbody></tbody>                                                                                                                                                                                                                                                                                                                                                                                                     
+        <tfoot></tfoot>
+      </table>                                                                                                                                                                                                                                                                                                                                                                                                      
+      <button id="downloadPdfBtn" style="margin-top: 1rem; padding: 0.6rem 1rem; background:gold; color:#000000; text-decoration:lch(from color lightness chrome hue alpha); border:#1a1a1a; border-radius: 100px; cursor:pointer;">                                                                                                                                                                                                                                                                                                                                                                                                     
+        Download PDF                                                                                                                                                                                                                                                                                                                                                                                                      
+      </button>                                                                                                                                                                                                                                                                                                                                                                                                     
+      <p id="noEntries">કોઈ એન્ટ્રી નથી.</p>                                                                                                                                                                                                                                                                                                                                                                                                     
+    </div>                                                                                                                                                                                                                                                                                                                                                                                                      
 
-form button:hover {
-  background-color: #276426;
-}
+    <script>                                                                                                                                                                                                                                                                                                                                                                                                      
+    const entryForm = document.getElementById('entryForm');                                                                                                                                                                                                                                                                                                                                                                                                     
+    const entriesTableBody = document.querySelector('#entriesTable tbody');                                                                                                                                                                                                                                                                                                                                                                                                     
+    const noEntriesMsg = document.getElementById('noEntries');                                                                                                                                                                                                                                                                                                                                                                                                      
 
-/* Table styling */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0.5rem;
-  background: white;
-  box-shadow: 0 0 5px rgb(0 0 0 / 0.1);
-}
+    const gujaratiDays = ["રવિવાર", "સોમવાર", "મંગળવાર", "બુધવાર", "ગુરુવાર", "શુક્રવાર", "શનિવાર"];                                                                                                                                                                                                                                                                                                                                                                                                      
+    function getGujaratiDayName(dateString) {                                                                                                                                                                                                                                                                                                                                                                                                     
+      const date = new Date(dateString);                                                                                                                                                                                                                                                                                                                                                                                                      
+      return gujaratiDays[date.getDay()];                                                                                                                                                                                                                                                                                                                                                                                                     
+    }                                                                                                                                                                                                                                                                                                                                                                                                     
 
-th, td {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #ddd;
-  text-align: center;
-  font-size: 0.9rem;
-}
+    let entries = [];                                                                                                                                                                                                                                                                                                                                                                                                     
+    let currentMonthKey = getCurrentMonthKey();                                                                                                                                                                                                                                                                                                                                                                                                     
 
-th {
-  background-color: #2e7d32;
-  color: white;
-}
+    function getCurrentMonthKey() {                                                                                                                                                                                                                                                                                                                                                                                                     
+      const now = new Date();                                                                                                                                                                                                                                                                                                                                                                                                     
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;                                                                                                                                                                                                                                                                                                                                                                                                     
+    }                                                                                                                                                                                                                                                                                                                                                                                                     
 
-tbody tr:nth-child(even) {
-  background-color: #f1f1f1;
-}
+    function loadCurrentMonthEntries() {                                                                                                                                                                                                                                                                                                                                                                                                      
+      entries = JSON.parse(localStorage.getItem(currentMonthKey) || '[]');                                                                                                                                                                                                                                                                                                                                                                                                      
+    }                                                                                                                                                                                                                                                                                                                                                                                                     
 
-/* Clear 1 Entry button styling */
-.clearEntry {
-  background: #d32f2f;
-  color: white;
-  border: none;
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.85rem;
-}
+    function saveEntries() {                                                                                                                                                                                                                                                                                                                                                                                                      
+      localStorage.setItem(currentMonthKey, JSON.stringify(entries));                                                                                                                                                                                                                                                                                                                                                                                                     
+    }                                                                                                                                                                                                                                                                                                                                                                                                     
 
-.clearEntry:hover {
-  background: #9a2424;
-}
+    function checkMonthChangeAndArchive() {                                                                                                                                                                                                                                                                                                                                                                                                     
+      const storedMonth = localStorage.getItem('lastSavedMonth');                                                                                                                                                                                                                                                                                                                                                                                                     
+      const nowMonth = getCurrentMonthKey();                                                                                                                                                                                                                                                                                                                                                                                                      
 
-/* Responsive styles */
+      if (storedMonth !== nowMonth) {                                                                                                                                                                                                                                                                                                                                                                                                     
+        if (entries.length > 0 && storedMonth) {                                                                                                                                                                                                                                                                                                                                                                                                      
+          localStorage.setItem(storedMonth, JSON.stringify(entries));                                                                                                                                                                                                                                                                                                                                                                                                     
+        }                                                                                                                                                                                                                                                                                                                                                                                                     
+        entries = [];                                                                                                                                                                                                                                                                                                                                                                                                     
+        localStorage.setItem('lastSavedMonth', nowMonth);                                                                                                                                                                                                                                                                                                                                                                                                     
+        currentMonthKey = nowMonth;                                                                                                                                                                                                                                                                                                                                                                                                     
+        saveEntries();                                                                                                                                                                                                                                                                                                                                                                                                      
+      }                                                                                                                                                                                                                                                                                                                                                                                                     
+    }                                                                                                                                                                                                                                                                                                                                                                                                     
 
-/* Make the table horizontally scrollable on small screens */
-#entriesContainer {
-  overflow-x: auto;
-}
+    checkMonthChangeAndArchive();                                                                                                                                                                                                                                                                                                                                                                                                     
+    loadCurrentMonthEntries();                                                                                                                                                                                                                                                                                                                                                                                                      
 
-/* Stack form inputs vertically on very small screens */
-@media (max-width: 600px) {
-  form {
-    flex-direction: column;
-  }
-  form input, form button {
-    width: 100%;
-    max-width: none;
-  }
-}
+    // Populate monthSelector with available months from localStorage
+    function populateYearMonthSelectors() {
+      const yearSelector = document.getElementById('yearSelector');
+      const monthSelector = document.getElementById('monthSelector');
+      yearSelector.innerHTML = '';
+      monthSelector.innerHTML = '';
 
-/* Adjust font size on smaller devices */
-@media (max-width: 400px) {
-  body {
-    font-size: 14px;
-  }
-  th, td {
-    font-size: 0.8rem;
-    padding: 0.4rem 0.5rem;
-  }
-  .clearEntry {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.4rem;
-  }
-}
+      // Unlimited years (change range as needed)
+      const currentYear = new Date().getFullYear();
+      for (let y = currentYear - 50; y <= currentYear + 50; y++) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        yearSelector.appendChild(opt);
+      }
 
-  </style>
-  <!-- Corrected script imports for jsPDF and autotable -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      // Months
+      for (let m = 1; m <= 12; m++) {
+        const opt = document.createElement('option');
+        opt.value = String(m).padStart(2, '0');
+        opt.textContent = m;
+        monthSelector.appendChild(opt);
+      }
 
-</head>
-<body>
-  <h1>દૈનિક વ્યવસાય રેકોર્ડ</h1>
-  <!-- Install App Button -->
-<button id="installAppBtn" style="display: none; margin-bottom: 1rem; background: #1976d2; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
-  એપ ઇન્સ્ટોલ કરો
-</button>
-  <form id="entryForm">
-    <input type="date" id="date" required />
-    <input type="number" id="dailyCollection" placeholder="ડેલી" required />
-    <input type="number" id="work" placeholder="કામ" required />
-    <input type="number" id="google" placeholder="ગૂગલ" required />
-    <!-- Total Work calculated automatically -->
-    <input type="number" id="earned" placeholder="ઉપાડ" required />
-    <!-- Deposited calculated automatically -->
-    <input type="text" id="googleExpense" placeholder="ગૂગલ ખર્ચ" />
-    <input type="number" id="totalExpense" placeholder="કુલ ખર્ચ" />
-    <button type="submit">Add Entry</button>
-  </form>
-
-  <div id="entriesContainer">
-    <table id="entriesTable">
-      <thead>
-        <tr>
-          <th>ક્રમ સંખ્યા</th>
-          <th>તારીખ</th>
-          <th>ડેલી</th>
-          <th>કામ</th>
-          <th>ગૂગલ</th>
-          <th>કુલ કામ</th>
-          <th>ઉપાડ</th>
-          <th>જમા</th>
-          <th>ગૂગલ ખર્ચ</th>
-          <th>કુલ ખર્ચ</th>
-          <th>એકશન</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <button id="downloadPdfBtn" style="margin-top: 1rem; padding: 0.6rem 1rem; background:#4caf50; color:#fff; border:none; border-radius: 4px; cursor:pointer;">
-      Download PDF
-    </button>
-
-    <p id="noEntries">કોઈ એન્ટ્રી નથી.</p>
-  </div>
-
-  <script>
-    const entryForm = document.getElementById('entryForm');
-    const entriesTableBody = document.querySelector('#entriesTable tbody');
-    const noEntriesMsg = document.getElementById('noEntries');
-
-    // Load entries from localStorage or initialize empty array
-    let entries = JSON.parse(localStorage.getItem('dailyBusinessEntries') || '[]');
-
-    // Function to save entries to localStorage
-    function saveEntries() {
-      localStorage.setItem('dailyBusinessEntries', JSON.stringify(entries));
+      // Set current year/month as selected
+      yearSelector.value = currentYear;
+      monthSelector.value = String(new Date().getMonth() + 1).padStart(2, '0');
     }
 
+    document.getElementById('showMonthBtn').addEventListener('click', () => {
+      const year = document.getElementById('yearSelector').value;
+      const month = document.getElementById('monthSelector').value;
+      const key = `${year}-${month}`;
+      currentMonthKey = key;
+      loadCurrentMonthEntries();
+      renderEntries();
+    });
+
+    // Call this after DOM is ready
+    populateYearMonthSelectors();
+
+    // Only show entries for the selected month in the table
     function renderEntries() {
-      const tbody = document.querySelector('#entriesTable tbody');
-      tbody.innerHTML = '';
+      entriesTableBody.innerHTML = '';
+      let totalDaily = 0, totalWork = 0, totalGoogle = 0, totalTotalWork = 0, totalEarned = 0, totalDeposited = 0;
+      let totalGooglePay = 0, totalGoogleExpense = '', totalCashExpenseNote = '', totalTotalExpense = 0;
 
       if (entries.length === 0) {
-        document.getElementById('noEntries').style.display = 'block';
+        noEntriesMsg.style.display = 'block';
       } else {
-        document.getElementById('noEntries').style.display = 'none';
-
+        noEntriesMsg.style.display = 'none';
         entries.forEach((entry, index) => {
           const tr = document.createElement('tr');
 
@@ -202,9 +281,11 @@ tbody tr:nth-child(even) {
             return `${day}-${month}-${year}`;
           }
 
+          const gujaratiDay = entry.gujaratiDay || getGujaratiDayName(entry.date);
+
           tr.innerHTML = `
             <td>${index + 1}</td>
-            <td>${formatDate(entry.date)}</td>
+            <td>${formatDate(entry.date)} (${gujaratiDay})</td>
             <td>${entry.dailyCollection}</td>
             <td>${entry.work}</td>
             <td>${entry.google}</td>
@@ -212,13 +293,45 @@ tbody tr:nth-child(even) {
             <td>${entry.earned}</td>
             <td>${entry.deposited}</td>
             <td>${entry.googleExpense}</td>
+            <td>${entry.googlePay}</td>
+            <td>${entry.cashExpenseNote || ''}</td>
             <td>${entry.totalExpense}</td>
             <td><button class="clearEntry" data-index="${index}">Clear 1 Entry</button></td>
           `;
-          tbody.appendChild(tr);
+          entriesTableBody.appendChild(tr);
+
+          // Subtotals
+          totalDaily += Number(entry.dailyCollection) || 0;
+          totalWork += Number(entry.work) || 0;
+          totalGoogle += Number(entry.google) || 0;
+          totalTotalWork += Number(entry.totalWork) || 0;
+          totalEarned += Number(entry.earned) || 0;
+          totalDeposited += Number(entry.deposited) || 0;
+          totalGooglePay += Number(entry.googlePay) || 0;
+          totalTotalExpense += Number(entry.totalExpense) || 0;
+          // For notes, you can concatenate or leave blank
         });
 
-        // Attach event listeners to "Clear 1 Entry" buttons
+        // Add subtotal row
+        const tfoot = document.querySelector('#entriesTable tfoot') || document.createElement('tfoot');
+        tfoot.innerHTML = `
+          <tr style="background:#222;color:gold;font-weight:bold;">
+            <td colspan="2">Total</td>
+            <td>${totalDaily}</td>
+            <td>${totalWork}</td>
+            <td>${totalGoogle}</td>
+            <td>${totalTotalWork}</td>
+            <td>${totalEarned}</td>
+            <td>${totalDeposited}</td>
+            <td></td>
+            <td>${totalGooglePay}</td>
+            <td></td>
+            <td>${totalTotalExpense}</td>
+            <td></td>
+          </tr>
+        `;
+        document.querySelector('#entriesTable').appendChild(tfoot);
+
         document.querySelectorAll('.clearEntry').forEach(button => {
           button.addEventListener('click', () => {
             const index = button.getAttribute('data-index');
@@ -228,121 +341,97 @@ tbody tr:nth-child(even) {
           });
         });
       }
-    }
+    }                                                                                                                                                                                                                                                                                                                                                                                                     
 
-    // On form submit: validate and add new entry
-    entryForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+    entryForm.addEventListener('submit', (e) => {                                                                                                                                                                                                                                                                                                                                                                                                     
+      e.preventDefault();                                                                                                                                                                                                                                                                                                                                                                                                     
+      const dateInput = document.getElementById('date');                                                                                                                                                                                                                                                                                                                                                                                                      
+      const date = dateInput.value;                                                                                                                                                                                                                                                                                                                                                                                                     
+      const gujaratiDay = getGujaratiDayName(date);                                                                                                                                                                                                                                                                                                                                                                                                     
 
-      const date = document.getElementById('date').value;
-      const dailyCollection = Number(document.getElementById('dailyCollection').value);
-      const work = Number(document.getElementById('work').value);
-      const google = Number(document.getElementById('google').value);
-      const earned = Number(document.getElementById('earned').value);
-      const googleExpense = document.getElementById('googleExpense').value || '';
+      const dailyCollection = Number(document.getElementById('dailyCollection').value);                                                                                                                                                                                                                                                                                                                                                                                                     
+      const work = Number(document.getElementById('work').value);                                                                                                                                                                                                                                                                                                                                                                                                     
+      const google = Number(document.getElementById('google').value);                                                                                                                                                                                                                                                                                                                                                                                                     
+      const earned = Number(document.getElementById('earned').value);                                                                                                                                                                                                                                                                                                                                                                                                     
+      const googlePay = Number(document.getElementById('googlePay').value) || 0;                                                                                                                                                                                                                                                                                                                                                                                                      
+      const googleExpense = document.getElementById('googleExpenseNote').value || '';                                                                                                                                                                                                                                                                                                                                                                                                     
+      const cashExpenseNote = document.getElementById('cashExpenseNote').value || '';                                                                                                                                                                                                                                                                                                                                                                                                     
+      const totalExpense = Number(document.getElementById('totalExpense').value) || 0;                                                                                                                                                                                                                                                                                                                                                                                                      
 
-      const totalExpense = Number(document.getElementById('totalExpense').value) || 0;
+      const totalWork = work + google;                                                                                                                                                                                                                                                                                                                                                                                                      
+      const deposited = totalWork - earned - dailyCollection - google - googlePay;                                                                                                                                                                                                                                                                                                                                                                                                      
 
-      // Calculations
-      const totalWork = work + google;
-      const deposited = totalWork - earned - dailyCollection - google;
+      const entry = {                                                                                                                                                                                                                                                                                                                                                                                                     
+        date,                                                                                                                                                                                                                                                                                                                                                                                                     
+        gujaratiDay,                                                                                                                                                                                                                                                                                                                                                                                                      
+        dailyCollection,                                                                                                                                                                                                                                                                                                                                                                                                      
+        work,                                                                                                                                                                                                                                                                                                                                                                                                     
+        google,                                                                                                                                                                                                                                                                                                                                                                                                     
+        totalWork,                                                                                                                                                                                                                                                                                                                                                                                                      
+        earned,                                                                                                                                                                                                                                                                                                                                                                                                     
+        deposited,                                                                                                                                                                                                                                                                                                                                                                                                      
+        googlePay,                                                                                                                                                                                                                                                                                                                                                                                                      
+        googleExpense,                                                                                                                                                                                                                                                                                                                                                                                                      
+        cashExpenseNote,                                                                                                                                                                                                                                                                                                                                                                                                      
+        totalExpense                                                                                                                                                                                                                                                                                                                                                                                                      
+      };                                                                                                                                                                                                                                                                                                                                                                                                      
 
-      // Create entry object
-      const entry = {
-        date,
-        dailyCollection,
-        work,
-        google,
-        totalWork,
-        earned,
-        deposited,
-        googleExpense,
-        totalExpense
-      };
+      entries.push(entry);                                                                                                                                                                                                                                                                                                                                                                                                      
+      saveEntries();                                                                                                                                                                                                                                                                                                                                                                                                      
+      renderEntries();                                                                                                                                                                                                                                                                                                                                                                                                      
+      entryForm.reset();                                                                                                                                                                                                                                                                                                                                                                                                      
+    });                                                                                                                                                                                                                                                                                                                                                                                                     
 
-      entries.push(entry);
-      saveEntries();
-      renderEntries();
-      entryForm.reset();
-    });
+    renderEntries();                                                                                                                                                                                                                                                                                                                                                                                                      
+  </script>                                                                                                                                                                                                                                                                                                                                                                                                     
 
-    // Initial render
-    renderEntries();
-
-    // Download PDF functionality
-   document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF("p", "mm", "a4");
-
-  const table = document.getElementById("entriesTable");
-
-  // STEP 1: Hide the last column (એકશન column)
-  const hideActionColumn = () => {
-    table.querySelectorAll("tr").forEach(row => {
-      if (row.cells.length > 0) {
-        row.cells[row.cells.length - 1].style.display = "none";
-      }
-    });
-  };
-
-  // STEP 2: Show back the column
-  const showActionColumn = () => {
-    table.querySelectorAll("tr").forEach(row => {
-      if (row.cells.length > 0) {
-        row.cells[row.cells.length - 1].style.display = "";
-      }
-    });
-  };
-
-  hideActionColumn(); // Hide before capturing
-
-  // Capture the table as image using html2canvas
-  await html2canvas(table, { scale: 2 }).then(canvas => {
-    const imgData = canvas.toDataURL("image/png");
-    const imgProps = doc.getImageProperties(imgData);
-    const pdfWidth = doc.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-    doc.addImage(imgData, 'PNG', 10, 10, pdfWidth - 20, pdfHeight);
-    doc.save("દૈનિક_વ્યવસાય_રેકોર્ડ.pdf");
-  });
-
-  showActionColumn(); // Show again after capture
-});
-
-
-  </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('✅ Service Worker Registered'))
-      .catch(error => console.error('❌ SW Registration Failed:', error));
-  }
-</script>
-<script>
-  let deferredPrompt;
-  const installBtn = document.getElementById('installAppBtn');
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.style.display = 'inline-block'; // Show the install button
-
-    installBtn.addEventListener('click', () => {
-      installBtn.style.display = 'none'; // Hide it once clicked
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('✅ User accepted the install prompt');
-        } else {
-          console.log('❌ User dismissed the install prompt');
-        }
-        deferredPrompt = null;
+  <script>
+    document.getElementById('downloadPdfBtn').addEventListener('click', function () {
+      const entriesTable = document.getElementById('entriesTable');
+      html2canvas(entriesTable).then(function (canvas) {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new window.jspdf.jsPDF({
+          orientation: 'landscape',
+          unit: 'pt',
+          format: 'a4'
+        });
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgWidth = pageWidth - 40;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+        pdf.save('entries.pdf');
       });
     });
-  });
-</script>
+  </script>
 
+  <script>                                                                                                                                                                                                                                                                                                                                                                                                      
+    if ('serviceWorker' in navigator) {                                                                                                                                                                                                                                                                                                                                                                                                     
+      navigator.serviceWorker.register('service-worker.js')                                                                                                                                                                                                                                                                                                                                                                                                     
+        .then(() => console.log('✅ Service Worker Registered'))                                                                                                                                                                                                                                                                                                                                                                                                      
+        .catch(error => console.error('❌ SW Registration Failed:', error));                                                                                                                                                                                                                                                                                                                                                                                                      
+    }                                                                                                                                                                                                                                                                                                                                                                                                     
 
-</body>
+    let deferredPrompt;                                                                                                                                                                                                                                                                                                                                                                                                     
+    const installBtn = document.getElementById('installAppBtn');                                                                                                                                                                                                                                                                                                                                                                                                      
+    window.addEventListener('beforeinstallprompt', (e) => {                                                                                                                                                                                                                                                                                                                                                                                                     
+      e.preventDefault();                                                                                                                                                                                                                                                                                                                                                                                                     
+      deferredPrompt = e;                                                                                                                                                                                                                                                                                                                                                                                                     
+      installBtn.style.display = 'inline-block';                                                                                                                                                                                                                                                                                                                                                                                                      
+
+      installBtn.addEventListener('click', () => {                                                                                                                                                                                                                                                                                                                                                                                                      
+        installBtn.style.display = 'none';                                                                                                                                                                                                                                                                                                                                                                                                      
+        deferredPrompt.prompt();                                                                                                                                                                                                                                                                                                                                                                                                      
+        deferredPrompt.userChoice.then((choiceResult) => {                                                                                                                                                                                                                                                                                                                                                                                                      
+          if (choiceResult.outcome === 'accepted') {                                                                                                                                                                                                                                                                                                                                                                                                      
+            console.log('✅ User accepted the install prompt');                                                                                                                                                                                                                                                                                                                                                                                                     
+          } else {                                                                                                                                                                                                                                                                                                                                                                                                      
+            console.log('❌ User dismissed the install prompt');                                                                                                                                                                                                                                                                                                                                                                                                      
+          }                                                                                                                                                                                                                                                                                                                                                                                                     
+          deferredPrompt = null;                                                                                                                                                                                                                                                                                                                                                                                                      
+        });                                                                                                                                                                                                                                                                                                                                                                                                     
+      });                                                                                                                                                                                                                                                                                                                                                                                                     
+    });                                                                                                                                                                                                                                                                                                                                                                                                     
+  </script>                                                                                                                                                                                                                                                                                                                                                                                                     
+</body>                                                                                                                                                                                                                                                                                                                                                                                                     
 </html>
